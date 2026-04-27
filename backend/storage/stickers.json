@@ -1,0 +1,20 @@
+[
+    {
+        "id": "b9ef4d2564bcf201",
+        "name": "test",
+        "slug": "",
+        "price": 60,
+        "count": 5,
+        "status": "active",
+        "coverImage": "/line-stick/backend/uploads/stickers/d1dae8ace06daa49.jpg",
+        "previewImages": [
+            "/line-stick/backend/uploads/stickers/ed733f8caecfd2ef.jpg",
+            "/line-stick/backend/uploads/stickers/3e3b858c74b125c1.jpg",
+            "/line-stick/backend/uploads/stickers/e46e447efc8b013e.jpg",
+            "/line-stick/backend/uploads/stickers/02d42cfc54cb4c5c.webp",
+            "/line-stick/backend/uploads/stickers/ed13bb0b612c1652.png"
+        ],
+        "createdAt": "2026-04-27T11:24:20+00:00",
+        "updatedAt": "2026-04-27T11:34:39+00:00"
+    }
+]
