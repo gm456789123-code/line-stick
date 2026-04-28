@@ -33,8 +33,8 @@ RUN echo "<VirtualHost *:80>\n\
     ProxyPass /api !\n\
     ProxyPass /uploads !\n\
     ProxyPass /storage !\n\
-    ProxyPass / http://127.0.0.1:3000/\n\
-    ProxyPassReverse / http://127.0.0.1:3000/\n\
+    ProxyPass / http://127.0.0.1:3001/\n\
+    ProxyPassReverse / http://127.0.0.1:3001/\n\
 </VirtualHost>" > /etc/apache2/sites-available/000-default.conf
 
 # 2. Frontend (Next.js)
