@@ -30,6 +30,10 @@ RUN echo "<VirtualHost *:80>\n\
         Require all granted\n\
     </Directory>\n\
     ProxyPreserveHost On\n\
+    RewriteEngine On\n\
+    RewriteCond %{DOCUMENT_ROOT}%{REQUEST_FILENAME} -f [OR]\n\
+    RewriteCond %{DOCUMENT_ROOT}%{REQUEST_FILENAME} -d\n\
+    RewriteRule ^ - [L]\n\
     ProxyPass /api !\n\
     ProxyPass /uploads !\n\
     ProxyPass /storage !\n\
