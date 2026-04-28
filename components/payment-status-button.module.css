@@ -1,0 +1,168 @@
+﻿.wrap {
+  margin-top: 20px;
+  border-radius: 20px;
+  border: 1px solid #bfded1;
+  background: radial-gradient(circle at 20% 0%, #fbfff6 0%, #edf8ff 45%, #ecfdf3 100%);
+  padding: 16px;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+}
+
+.title {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #153b2f;
+}
+
+.tag {
+  font-size: 0.74rem;
+  font-weight: 700;
+  border-radius: 999px;
+  padding: 5px 10px;
+  color: #145739;
+  background: #ddf7e9;
+}
+
+.dropzone {
+  width: 100%;
+  border: 2px dashed #6ebf8f;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.9);
+  padding: 18px;
+  text-align: center;
+  cursor: pointer;
+  display: block;
+  transition: transform 0.18s ease, border-color 0.18s ease;
+}
+
+.dropzone:hover {
+  border-color: #38a169;
+  transform: translateY(-1px);
+}
+
+.locked {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.icon {
+  font-size: 1.65rem;
+  line-height: 1;
+  margin-bottom: 8px;
+  color: #2a7f56;
+}
+
+.selectLabel {
+  display: block;
+  font-size: 0.95rem;
+  color: #1d4f3a;
+}
+
+.hint {
+  display: block;
+  margin-top: 4px;
+  font-size: 0.82rem;
+  color: #4d6258;
+}
+
+.previewWrap {
+  margin-top: 12px;
+}
+
+.previewTitle {
+  margin: 0 0 8px;
+  font-size: 0.82rem;
+  color: #3e5048;
+}
+
+.previewImage {
+  width: 100%;
+  max-width: 360px;
+  border-radius: 12px;
+  border: 1px solid #d4e6db;
+  display: block;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 14px;
+  flex-wrap: wrap;
+}
+
+.small {
+  color: #4a6052;
+}
+
+.message {
+  margin-top: 10px;
+  margin-bottom: 0;
+  font-size: 0.92rem;
+  font-weight: 600;
+}
+
+.ok {
+  color: #1f6b3e;
+}
+
+.error {
+  color: #b03a3a;
+}
+
+.billBackdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 3200;
+  background: rgba(8, 20, 16, 0.56);
+  backdrop-filter: blur(4px);
+  display: grid;
+  place-items: center;
+  padding: 16px;
+}
+
+.billModal {
+  width: min(460px, 100%);
+  border-radius: 18px;
+  border: 1px solid #d2e8d8;
+  background: linear-gradient(145deg, #ffffff 0%, #eefcf4 100%);
+  box-shadow: 0 26px 64px rgba(0, 0, 0, 0.24);
+  padding: 20px;
+  text-align: center;
+}
+
+.billKicker {
+  margin: 0;
+  color: #256f4a;
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+
+.billTitle {
+  margin: 6px 0 6px;
+  color: #143d2e;
+  font-size: 1.3rem;
+  font-weight: 800;
+}
+
+.billText {
+  margin: 0 0 14px;
+  color: #3b5a4b;
+}
+
+.billWarning {
+  margin: 0 0 14px;
+  color: #c81e1e;
+  font-weight: 700;
+  font-size: 0.9rem;
+}

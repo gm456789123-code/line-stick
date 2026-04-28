@@ -1,0 +1,450 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;500;600;700&family=Poppins:wght@400;500;600&display=swap');
+@import "tailwindcss";
+
+/* ==================== CSS Variables ==================== */
+:root {
+  /* สีหลัก LINE */
+  --line-green: #00C300;
+  --line-green-dark: #008C00;
+  --line-green-darker: #006600;
+
+  /* สีน้ำตาล */
+  --brown-primary: #8B5E2B;
+  --brown-light: #A67B5B;
+  --brown-dark: #5C3D1F;
+
+  /* พื้นหลัง */
+  --bg-main: #FFFFFF;
+  --bg-light: #F8F4ED;
+  --bg-card: #FFF9F0;
+
+  /* ข้อความ */
+  --text-dark: #2C2C2C;
+  --text-light: #666666;
+
+  /* Border & Shadow */
+  --border-color: #EDE4D4;
+  --shadow-sm: 0 2px 8px rgba(139, 94, 43, 0.1);
+  --shadow-md: 0 4px 16px rgba(139, 94, 43, 0.15);
+}
+
+/* ==================== Global Reset ==================== */
+* {
+  font-family: 'Noto Sans Thai', 'Poppins', sans-serif;
+}
+
+body {
+  background-color: var(--bg-light);
+  color: var(--text-dark);
+}
+
+/* ==================== Bootstrap Overrides ==================== */
+.bg-primary  { background-color: var(--line-green) !important; }
+.text-primary { color: var(--line-green) !important; }
+
+.btn-primary {
+  background-color: var(--line-green);
+  border-color: var(--line-green);
+  color: white;
+}
+.btn-primary:hover {
+  background-color: var(--line-green-dark);
+  border-color: var(--line-green-dark);
+}
+
+.btn-brown {
+  background-color: var(--brown-primary);
+  border-color: var(--brown-primary);
+  color: white;
+}
+.btn-brown:hover {
+  background-color: var(--brown-dark);
+  border-color: var(--brown-dark);
+}
+
+/* ==================== Custom Components ==================== */
+.header-line {
+  background: linear-gradient(135deg, var(--line-green-dark), var(--line-green));
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.sticker-card {
+  background: var(--bg-card);
+  border: 2px solid var(--border-color);
+  border-radius: 16px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+.sticker-card:hover {
+  transform: translateY(-8px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--line-green);
+}
+
+.search-line {
+  border-radius: 50px;
+  border: 2px solid var(--border-color);
+  padding: 12px 20px;
+  outline: none;
+  transition: all 0.2s;
+}
+.search-line:focus {
+  border-color: var(--line-green);
+  box-shadow: 0 0 0 4px rgba(0, 195, 0, 0.15);
+}
+
+.wp-shell {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 32px 16px 72px;
+}
+
+.wp-header {
+  background: linear-gradient(135deg, #005f2d, #00a043);
+  color: #fff;
+  border-radius: 16px;
+  padding: 28px;
+  margin-bottom: 24px;
+}
+
+.wp-header h1 {
+  margin: 0 0 10px;
+  font-size: clamp(26px, 3.2vw, 40px);
+}
+
+.wp-header p {
+  margin: 0 0 8px;
+  opacity: 0.95;
+}
+
+.wp-kicker {
+  display: inline-block;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  font-weight: 700;
+  text-transform: uppercase;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 999px;
+  padding: 4px 10px;
+  margin-bottom: 12px;
+}
+
+.wp-section {
+  background: #fff;
+  border: 1px solid #e4e4e4;
+  border-radius: 14px;
+  padding: 22px;
+  margin-bottom: 18px;
+}
+
+.wp-section h2 {
+  margin-top: 0;
+  margin-bottom: 14px;
+}
+
+.wp-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 12px;
+}
+
+.wp-card {
+  border: 1px solid #e9e9e9;
+  border-radius: 12px;
+  padding: 14px;
+  background: #fcfcfc;
+}
+
+.wp-card h3 {
+  margin-top: 0;
+  margin-bottom: 6px;
+}
+
+.wp-card p {
+  margin: 0;
+}
+
+.wp-meta {
+  color: #666;
+  font-size: 14px;
+  margin-bottom: 8px !important;
+}
+
+.wp-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.wp-tag {
+  background: #e9f9ee;
+  color: #005f2d;
+  text-decoration: none;
+  padding: 7px 12px;
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.wp-note {
+  border: 1px dashed #b8b8b8;
+  border-radius: 10px;
+  padding: 14px;
+  background: #fafafa;
+}
+
+.wp-muted {
+  color: #666;
+  margin: 0;
+}
+
+.wp-rich {
+  line-height: 1.7;
+}
+
+.wp-rich > :first-child {
+  margin-top: 0;
+}
+
+.wp-rich img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 10px;
+}
+
+.wp-rich a {
+  color: #0b66c3;
+}
+
+.detail-shell {
+  position: relative;
+  min-height: 100vh;
+  padding: 24px 16px 56px;
+  max-width: 1120px;
+  margin: 0 auto;
+}
+
+.detail-backdrop {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 14% 10%, rgba(0, 195, 0, 0.1), transparent 35%),
+    radial-gradient(circle at 86% 14%, rgba(139, 94, 43, 0.1), transparent 32%),
+    linear-gradient(180deg, #f2f8ee 0%, #f8f4ed 100%);
+  z-index: -1;
+}
+
+.detail-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.detail-back,
+.detail-origin {
+  text-decoration: none;
+  font-weight: 600;
+  color: #1d1d1d;
+}
+
+.detail-origin {
+  color: #006f30;
+}
+
+.detail-stage {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+  margin-bottom: 18px;
+}
+
+.detail-art {
+  background: #ffffff;
+  border: 1px solid #e7dfd2;
+  border-radius: 22px;
+  min-height: 330px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  padding: 20px;
+  overflow: hidden;
+}
+
+.detail-badge {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  background: #00c300;
+  color: #fff;
+  border-radius: 999px;
+  padding: 5px 10px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.detail-image {
+  width: min(100%, 460px);
+  max-height: 460px;
+  object-fit: cover;
+  border-radius: 18px;
+  display: block;
+}
+
+.detail-emoji {
+  font-size: clamp(96px, 12vw, 180px);
+  line-height: 1;
+}
+
+.detail-info {
+  background: #ffffff;
+  border: 1px solid #e7dfd2;
+  border-radius: 22px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.detail-kicker {
+  margin: 0 0 8px;
+  color: #006f30;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.detail-info h1 {
+  margin: 0 0 10px;
+  font-size: clamp(28px, 4vw, 44px);
+  line-height: 1.1;
+}
+
+.detail-date {
+  margin: 0;
+  color: #666;
+}
+
+.detail-metrics {
+  margin-top: 18px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.detail-metric {
+  background: #f7fbf4;
+  border: 1px solid #dfe9da;
+  border-radius: 14px;
+  padding: 12px;
+}
+
+.detail-metric-label {
+  display: block;
+  color: #666;
+  font-size: 12px;
+  margin-bottom: 2px;
+}
+
+.detail-metric strong {
+  font-size: 18px;
+  color: #2c2c2c;
+}
+
+.detail-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 18px;
+  flex-wrap: wrap;
+}
+
+.detail-buy,
+.detail-ghost {
+  border-radius: 999px;
+  padding: 11px 18px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.detail-buy {
+  border: 0;
+  background: linear-gradient(90deg, #006f30 0%, #00c300 100%);
+  color: #fff;
+}
+
+.detail-ghost {
+  border: 1px solid #cfd8ca;
+  color: #1f1f1f;
+  background: #fff;
+}
+
+.detail-content {
+  background: #ffffff;
+  border: 1px solid #e7dfd2;
+  border-radius: 22px;
+  padding: 24px;
+}
+
+.detail-preview {
+  margin-top: 18px;
+  background: #ececec;
+  border: 1px solid #d4d4d4;
+  border-radius: 22px;
+  padding: 18px;
+}
+
+.detail-preview-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.detail-preview-head h2 {
+  margin: 0;
+  font-size: 34px;
+  font-weight: 900;
+  letter-spacing: -0.03em;
+}
+
+.detail-preview-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 14px;
+}
+
+.detail-preview-item {
+  margin: 0;
+  background: #e5e5e5;
+  border-radius: 14px;
+  overflow: hidden;
+  aspect-ratio: 1 / 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.detail-preview-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  background: #e5e5e5;
+}
+
+@media (max-width: 900px) {
+  .detail-stage {
+    grid-template-columns: 1fr;
+  }
+
+  .detail-art {
+    min-height: 250px;
+  }
+
+  .detail-preview-head h2 {
+    font-size: 28px;
+  }
+}
