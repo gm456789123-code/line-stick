@@ -1,66 +1,44 @@
-# ใช้ PHP 8.2 + Apache
+# 1. Build Stage สำหรับ Next.js
+FROM node:20-slim AS frontend-builder
+WORKDIR /app/frontend
+COPY frontend/package*.json ./
+# จำกัดแรมตอน Build
+ENV NODE_OPTIONS="--max-old-space-size=1024"
+RUN npm install
+COPY frontend/ ./
+RUN npm run build
+
+# 2. Production Stage (PHP + Apache)
 FROM php:8.2-apache
+RUN apt-get update && apt-get install -y nodejs npm && a2enmod rewrite proxy proxy_http headers
 
-# ติดตั้ง System Dependencies และ Node.js 20
-RUN apt-get update && apt-get install -y \
-    curl \
-    gnupg \
-    libpng-dev \
-    libjpeg-dev \
-    libfreetype6-dev \
-    libzip-dev \
-    zip \
-    unzip \
-    && docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install pdo_mysql gd zip \
-    && curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
-    && apt-get install -y nodejs
-
-# เปิดใช้งาน Apache Modules
-RUN a2enmod rewrite proxy proxy_http headers
-
-# 1. Backend (PHP)
+# ก๊อปปี้ไฟล์ Backend ไปที่ /var/www/html
 COPY backend/ /var/www/html/
 RUN chown -R www-data:www-data /var/www/html
 
-# ตั้งค่า Apache แบบระบุรายละเอียดโฟลเดอร์ API
-RUN echo "<VirtualHost *:80>\n\
+# ตั้งค่า Apache แบบคลีนๆ (ไม่มี \n\ ให้งง)
+RUN printf "<VirtualHost *:80>\n\
     DocumentRoot /var/www/html\n\
-    \n\
     <Directory /var/www/html>\n\
-        Options Indexes FollowSymLinks\n\
         AllowOverride All\n\
         Require all granted\n\
     </Directory>\n\
-    \n\
-    # เจาะจงโฟลเดอร์ API เพื่อความชัวร์\n\
-    <Directory /var/www/html/api>\n\
-        AllowOverride All\n\
-    </Directory>\n\
-    \n\
     ProxyPreserveHost On\n\
-    \n\
-    # สั่งห้าม Proxy สำหรับโฟลเดอร์เหล่านี้\n\
     ProxyPass /api !\n\
     ProxyPass /uploads !\n\
     ProxyPass /storage !\n\
-    \n\
-    # ส่วนที่เหลือทั้งหมด ส่งให้ Next.js\n\
     ProxyPass / http://127.0.0.1:3001/\n\
     ProxyPassReverse / http://127.0.0.1:3001/\n\
 </VirtualHost>" > /etc/apache2/sites-available/000-default.conf
 
-# 2. Frontend (Next.js)
+# ก๊อปปี้ไฟล์ Next.js ที่ Build เสร็จแล้วมาลงในเครื่องนี้
 WORKDIR /app/frontend
-COPY frontend/ ./
+COPY --from=frontend-builder /app/frontend/.next ./.next
+COPY --from=frontend-builder /app/frontend/node_modules ./node_modules
+COPY --from=frontend-builder /app/frontend/public ./public
+COPY --from=frontend-builder /app/frontend/package.json ./package.json
 
-# จำกัดการใช้แรมของ Node.js
-ENV NODE_OPTIONS="--max-old-space-size=1536"
-
-RUN npm install
-RUN npm run build
-
-# 3. Startup
+# ก๊อปปี้สคริปต์เริ่มงาน
 WORKDIR /app
 COPY start.sh ./
 RUN chmod +x start.sh
