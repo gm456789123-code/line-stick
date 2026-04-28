@@ -1,6 +1,7 @@
 # ใช้ PHP 8.2 + Apache
 FROM php:8.2-apache
 
+# ติดตั้ง System Dependencies และ Node.js
 RUN apt-get update && apt-get install -y \
     curl \
     gnupg \
@@ -15,28 +16,48 @@ RUN apt-get update && apt-get install -y \
     && curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
     && apt-get install -y nodejs
 
-RUN a2enmod rewrite
+# เปิดใช้งาน Apache Modules ที่จำเป็น (รวมถึง proxy สำหรับ Next.js)
+RUN a2enmod rewrite proxy proxy_http headers
 
-# 1. Backend (PHP)
+# ==========================================
+# 1. จัดการ Backend (PHP) และตั้งค่า Proxy
+# ==========================================
 COPY backend/ /var/www/html/
 RUN chown -R www-data:www-data /var/www/html
 
-# 2. Frontend (Next.js)
+# ตั้งค่า Apache ให้เป็น Gateway: 
+# ถ้าเข้า /api, /uploads, /storage ให้ทำงานที่ PHP
+# นอกเหนือจากนั้น ให้ส่งต่อไปที่ Next.js (Port 3000)
+RUN echo "<VirtualHost *:80>\n\
+    DocumentRoot /var/www/html\n\
+    <Directory /var/www/html>\n\
+        AllowOverride All\n\
+        Require all granted\n\
+    </Directory>\n\
+    ProxyPreserveHost On\n\
+    ProxyPass /api !\n\
+    ProxyPass /uploads !\n\
+    ProxyPass /storage !\n\
+    ProxyPass / http://127.0.0.1:3000/\n\
+    ProxyPassReverse / http://127.0.0.1:3000/\n\
+</VirtualHost>" > /etc/apache2/sites-available/000-default.conf
+
+# ==========================================
+# 2. จัดการ Frontend (Next.js)
+# ==========================================
 WORKDIR /app/frontend
-
-# ลอง COPY แบบเจาะจง เพื่อเช็กว่าไฟล์มีตัวตนบน context หรือไม่
-COPY frontend/package.json ./
-# สั่งลิสต์ไฟล์ออกมาดูให้โลกเห็น!
-RUN ls -la
-
-RUN npm install
 COPY frontend/ ./
+RUN npm install
 RUN npm run build
 
-# 3. Startup
+# ==========================================
+# 3. เตรียมตัวรัน
+# ==========================================
 WORKDIR /app
 COPY start.sh ./
 RUN chmod +x start.sh
 
-EXPOSE 80 3000
+# เปิดพอร์ต 80 พอร์ตเดียวพอ! (เพราะ Apache จะเป็นตัวจัดการรับส่งให้ทั้งหมด)
+EXPOSE 80
+
 CMD ["./start.sh"]
