@@ -1,7 +1,7 @@
 # ใช้ PHP 8.2 + Apache
 FROM php:8.2-apache
 
-# ติดตั้ง System Dependencies และ Node.js 20 (ตามที่ Next.js ต้องการ)
+# ติดตั้ง System Dependencies และ Node.js 20
 RUN apt-get update && apt-get install -y \
     curl \
     gnupg \
@@ -16,12 +16,10 @@ RUN apt-get update && apt-get install -y \
     && curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
     && apt-get install -y nodejs
 
-# เปิดใช้งาน Apache Modules ที่จำเป็น
+# เปิดใช้งาน Apache Modules
 RUN a2enmod rewrite proxy proxy_http headers
 
-# ==========================================
-# 1. จัดการ Backend (PHP) และตั้งค่า Proxy
-# ==========================================
+# 1. Backend (PHP)
 COPY backend/ /var/www/html/
 RUN chown -R www-data:www-data /var/www/html
 
@@ -39,21 +37,17 @@ RUN echo "<VirtualHost *:80>\n\
     ProxyPassReverse / http://127.0.0.1:3000/\n\
 </VirtualHost>" > /etc/apache2/sites-available/000-default.conf
 
-# ==========================================
-# 2. จัดการ Frontend (Next.js)
-# ==========================================
+# 2. Frontend (Next.js)
 WORKDIR /app/frontend
 COPY frontend/ ./
 
-# ส่องดูไฟล์ (เก็บไว้ดูเพื่อความชัวร์)
-RUN echo "=== FILES IN FRONTEND DIRECTORY ===" && ls -la
+# จำกัดการใช้แรมของ Node.js เพื่อไม่ให้เครื่องค้าง (Set ไว้ที่ 1.5GB จาก 1.9GB)
+ENV NODE_OPTIONS="--max-old-space-size=1536"
 
 RUN npm install
 RUN npm run build
 
-# ==========================================
-# 3. เตรียมตัวรัน
-# ==========================================
+# 3. Startup
 WORKDIR /app
 COPY start.sh ./
 RUN chmod +x start.sh
