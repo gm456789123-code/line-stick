@@ -195,7 +195,7 @@ export async function getCmsOrders(options: FetchOptions = {}): Promise<CmsOrder
   }
 
   return json.data.map((row) => {
-    const customerObj = row.customer && typeof row.customer === "object" ? row.customer : {};
+    const customerObj = (row.customer && typeof row.customer === "object" ? row.customer : {}) as any;
     return {
       id: String(row.id ?? ""),
       customer: {
