@@ -23,20 +23,29 @@ RUN a2enmod rewrite proxy proxy_http headers
 COPY backend/ /var/www/html/
 RUN chown -R www-data:www-data /var/www/html
 
+# ตั้งค่า Apache แบบระบุรายละเอียดโฟลเดอร์ API
 RUN echo "<VirtualHost *:80>\n\
     DocumentRoot /var/www/html\n\
+    \n\
     <Directory /var/www/html>\n\
+        Options Indexes FollowSymLinks\n\
         AllowOverride All\n\
         Require all granted\n\
     </Directory>\n\
+    \n\
+    # เจาะจงโฟลเดอร์ API เพื่อความชัวร์\n\
+    <Directory /var/www/html/api>\n\
+        AllowOverride All\n\
+    </Directory>\n\
+    \n\
     ProxyPreserveHost On\n\
-    RewriteEngine On\n\
-    RewriteCond %{DOCUMENT_ROOT}%{REQUEST_FILENAME} -f [OR]\n\
-    RewriteCond %{DOCUMENT_ROOT}%{REQUEST_FILENAME} -d\n\
-    RewriteRule ^ - [L]\n\
+    \n\
+    # สั่งห้าม Proxy สำหรับโฟลเดอร์เหล่านี้\n\
     ProxyPass /api !\n\
     ProxyPass /uploads !\n\
     ProxyPass /storage !\n\
+    \n\
+    # ส่วนที่เหลือทั้งหมด ส่งให้ Next.js\n\
     ProxyPass / http://127.0.0.1:3001/\n\
     ProxyPassReverse / http://127.0.0.1:3001/\n\
 </VirtualHost>" > /etc/apache2/sites-available/000-default.conf
@@ -45,7 +54,7 @@ RUN echo "<VirtualHost *:80>\n\
 WORKDIR /app/frontend
 COPY frontend/ ./
 
-# จำกัดการใช้แรมของ Node.js เพื่อไม่ให้เครื่องค้าง (Set ไว้ที่ 1.5GB จาก 1.9GB)
+# จำกัดการใช้แรมของ Node.js
 ENV NODE_OPTIONS="--max-old-space-size=1536"
 
 RUN npm install
