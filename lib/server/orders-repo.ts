@@ -33,12 +33,6 @@ export type OrderRecord = {
   updatedAt?: string;
 };
 
-function nowIso(): string {
-  const d = new Date();
-  const pad = (n: number) => String(n).padStart(2, "0");
-  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
-}
-
 function orderId(): string {
   return randomBytes(8).toString("hex");
 }
@@ -95,26 +89,19 @@ export async function createOrder(input: { customer: OrderCustomer; items: Order
   await ensureOrdersTable();
   const id = orderId();
   const publicToken = token();
-  const createdAt = nowIso();
 
   await db().execute(
     `INSERT INTO cms_orders
-      (id, public_token, customer_json, items_json, total, status, created_at, updated_at)
+      (id, public_token, customer_json, items_json, total, status)
      VALUES
-      (?, ?, ?, ?, ?, 'pending_payment', ?, ?)`,
-    [id, publicToken, JSON.stringify(input.customer), JSON.stringify(input.items), input.total, createdAt, createdAt]
+      (?, ?, ?, ?, ?, 'pending_payment')`,
+    [id, publicToken, JSON.stringify(input.customer), JSON.stringify(input.items), input.total]
   );
-
-  return {
-    id,
-    publicToken,
-    customer: input.customer,
-    items: input.items,
-    total: input.total,
-    status: "pending_payment",
-    createdAt,
-    updatedAt: createdAt,
-  };
+  const created = await findOrderById(id);
+  if (!created) {
+    throw new Error("Order created but cannot be loaded.");
+  }
+  return created;
 }
 
 export async function findOrderById(id: string): Promise<OrderRecord | null> {
@@ -132,28 +119,22 @@ export async function listOrders(): Promise<OrderRecord[]> {
 
 export async function updateOrderStatus(id: string, status: string): Promise<OrderRecord | null> {
   await ensureOrdersTable();
-  const updatedAt = nowIso();
-  const completedAt = status === "completed" ? updatedAt : null;
-  await db().execute(
-    "UPDATE cms_orders SET status = ?, updated_at = ?, completed_at = COALESCE(?, completed_at) WHERE id = ?",
-    [status, updatedAt, completedAt, id]
-  );
+  if (status === "completed") {
+    await db().execute("UPDATE cms_orders SET status = ?, completed_at = CURRENT_TIMESTAMP WHERE id = ?", [status, id]);
+  } else {
+    await db().execute("UPDATE cms_orders SET status = ? WHERE id = ?", [status, id]);
+  }
   return findOrderById(id);
 }
 
 export async function markPaid(id: string): Promise<OrderRecord | null> {
   await ensureOrdersTable();
-  const updatedAt = nowIso();
-  await db().execute(
-    "UPDATE cms_orders SET status = 'under_review', payment_submitted_at = ?, updated_at = ? WHERE id = ?",
-    [updatedAt, updatedAt, id]
-  );
+  await db().execute("UPDATE cms_orders SET status = 'under_review', payment_submitted_at = CURRENT_TIMESTAMP WHERE id = ?", [id]);
   return findOrderById(id);
 }
 
 export async function attachSlip(id: string, slipImageUrl: string): Promise<OrderRecord | null> {
   await ensureOrdersTable();
-  const updatedAt = nowIso();
-  await db().execute("UPDATE cms_orders SET payment_slip_image = ?, updated_at = ? WHERE id = ?", [slipImageUrl, updatedAt, id]);
+  await db().execute("UPDATE cms_orders SET payment_slip_image = ? WHERE id = ?", [slipImageUrl, id]);
   return findOrderById(id);
 }
